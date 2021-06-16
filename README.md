@@ -8,7 +8,7 @@ This repository contains the coded needed to reporduce the results of [Model-Bas
 We also include a library of trained domain transformation models for ColoredMNIST, PACS, Camelyon17-WILDS, and FMoW-WILDS.  This library will be updated in the future with more models.  All models can be downloaded from the following Google Drive link:
 
 ```
-https://drive.google.com/drive/folders/1vDlZXk_Jow3bkPTlJLlloYCxOZAwnGBv?usp=sharing
+https://drive.google.com/drive/folders/1vDlZXk_Jow3bkPTlJLlloYCxOZAwnGBv
 ```
 
 In this README, we provide an overview describing how this code can be run.  If you find this repository useful in your research, please consider citing:
