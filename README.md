@@ -25,7 +25,7 @@ In this README, we provide an overview describing how this code can be run.  If 
 
 ## DomainBed implementation
 
-In the DomainBed implementation of our code, we implement our primal-dual style MBDG algorithm in `./domainbed/algorithms.py` as well as three algorithmic variants as described in Appendix C: MBDA, MBDG-DA, and MBDG-Reg.  These algorithms can be run using the same commands as the original DomainBed repository.
+In the DomainBed implementation of our code, we implement our primal-dual style MBDG algorithm in `./domainbed/algorithms.py` as well as three algorithmic variants as described in Appendix C: MBDA, MBDG-DA, and MBDG-Reg.  These algorithms can be run using the same commands as the original DomainBed repository (see the README at the following [link](https://github.com/facebookresearch/DomainBed/blob/master/README.md)).
 
 Our method is based on a primal-dual scheme for solving the Model-Based Domain Generalization constrained optimization problem.  This procedure is described in Algorithm 1 in our paper.  In particular, the core of our algorithm is an alternation between updating the primal variable θ (e.g., the parameter of a neural network based classifier) and updating the dual variable λ.  Below, we highlight a short code snippet that outlines our method:
 
@@ -65,7 +65,24 @@ class MBDG(MBDG_Base):
 
 ```
 
+In this sub-repository, we include the path to trained domain transformation models and configuration files for MUNIT as hyperparameters.  In particular, these parameters can be set for each dataset in `./domainbed/hparams_registry.py`:
+
+```python
+_hparam('mbdg_model_path', model_path, lambda r: model_path)
+_hparam('mbdg_config_path', config_path, lambda r: config_path)
+```
+
+where `model_path` and `config_path` are dataset-specific arguments.  
+
 ## WILDS implementation
 
 The WILDS datasets provide out-of-distribution validation sets to perform model selection.  Our code uses these validation sets in the `./mbdg-for-wilds` sub-repository.  The launcher script in `./dist_launch` can be used to train classifiers on both Camelyon17-WILDS and on FMoW-WILDS.
 
+The dataset and domain transformation models for WILDS can be set via the following flags in `./dist_launch.sh`:
+
+```bash
+export MODEL_PATH=<path/to/camelyon17>/model.pt
+export MUNIT_CONFIG_PATH=<path/to/camelyon17>/config.yaml
+```
+
+A non-distibuted launch script is also provided in `./launch.sh`.  
