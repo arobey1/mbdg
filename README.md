@@ -5,6 +5,12 @@ This repository contains the coded needed to reporduce the results of [Model-Bas
 1. A fork of [DomainBed](https://github.com/facebookresearch/DomainBed) which can be used to reproduce our results on ColoredMNIST, PACS, and VLCS.
 2. A separate implementation that can be used to reproduce our results on Camelyon17-WILDS and FMoW-WILDS.
 
+We also include a library of trained domain transformation models for ColoredMNIST, PACS, Camelyon17-WILDS, and FMoW-WILDS.  This library will be updated in the future with more models.  All models can be downloaded from the following Google Drive link:
+
+```
+https://drive.google.com/drive/folders/1vDlZXk_Jow3bkPTlJLlloYCxOZAwnGBv?usp=sharing
+```
+
 In this README, we provide an overview describing how this code can be run.  If you find this repository useful in your research, please consider citing:
 
 
