@@ -3,3 +3,4 @@ __pycache__/
 domainbed/data
 domainbed/munit/saved_models/*
 mbdg-for-wilds/models/learned_models/*
+mbdg-for-wilds/data
