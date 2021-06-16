@@ -21,6 +21,44 @@ In this README, we provide an overview describing how this code can be run.  If 
 
 In the DomainBed implementation of our code, we implement our primal-dual style MBDG algorithm in `./domainbed/algorithms.py` as well as three algorithmic variants as described in Appendix C: MBDA, MBDG-DA, and MBDG-Reg.  These algorithms can be run using the same commands as the original DomainBed repository.
 
+Our method is based on a primal-dual scheme for solving the Model-Based Domain Generalization constrained optimization problem.  This procedure is described in Algorithm 1 in our paper.  In particular, the core of our algorithm is an alternation between updating the primal variable θ (e.g., the parameter of a neural network based classifier) and updating the dual variable λ.  Below, we highlight a short code snippet that outlines our method:
+
+```python
+class MBDG(MBDG_Base):
+
+    def __init__(self, input_shape, num_classes, num_domains, hparams):
+        super(MBDG, self).__init__(input_shape, num_classes, num_domains, hparams)
+        self.dual_var = torch.tensor(1.0).cuda().requires_grad_(False)
+
+    def update(self, minibatches, unlabeled=None):
+        all_x = torch.cat([x for x,y in minibatches])
+        all_y = torch.cat([y for x,y in minibatches])
+
+        # calculate classification loss (loss(θ) in Algorithm 1)
+        clean_output = self.predict(all_x)
+        clean_loss = F.cross_entropy(clean_output, all_y)
+
+        # calculate regularization term (distReg(θ) in Algorithm 1)
+        dist_reg = self.calc_dist_reg(all_x, clean_output)
+
+        # formulate the (empirical) Lagrangian Λ = loss(θ) + λ distReg(θ)
+        loss = clean_loss + self.dual_var * dist_reg
+
+        # perform primal step in θ
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
+
+        # calculate constaint unsatisfaction term (distReg(θ) - γ)
+        const_unsat = dist_reg.detach() - self.hparams['mbdg_gamma']
+
+        # perform dual step in λ
+        self.dual_var = self.relu(self.dual_var + self.hparams['mbdg_dual_step_size'] * const_unsat)
+
+        return {'loss': loss.item(), 'dist_reg': dist_reg.item(), 'dual_var': self.dual_var.item()}
+
+```
+
 ## WILDS implementation
 
 The WILDS datasets provide out-of-distribution validation sets to perform model selection.  Our code uses these validation sets in the `./mbdg-for-wilds` sub-repository.  The launcher script in `./dist_launch` can be used to train classifiers on both Camelyon17-WILDS and on FMoW-WILDS.
